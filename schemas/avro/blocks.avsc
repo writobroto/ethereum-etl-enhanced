@@ -1,0 +1,86 @@
+{
+  "name": "MyClass",
+  "type": "record",
+  "namespace": "com.acme.avro",
+  "fields": [
+    {
+      "name": "number",
+      "type": "int"
+    },
+    {
+      "name": "hash",
+      "type": "string"
+    },
+    {
+      "name": "parent_hash",
+      "type": "string"
+    },
+    {
+      "name": "nonce",
+      "type": "string"
+    },
+    {
+      "name": "sha3_uncles",
+      "type": "string"
+    },
+    {
+      "name": "logs_bloom",
+      "type": "string"
+    },
+    {
+      "name": "transactions_root",
+      "type": "string"
+    },
+    {
+      "name": "state_root",
+      "type": "string"
+    },
+    {
+      "name": "receipts_root",
+      "type": "string"
+    },
+    {
+      "name": "miner",
+      "type": "string"
+    },
+    {
+      "name": "difficulty",
+      "type": "long"
+    },
+    {
+      "name": "total_difficulty",
+      "type": "long"
+    },
+    {
+      "name": "size",
+      "type": "int"
+    },
+    {
+      "name": "extra_data",
+      "type": "string"
+    },
+    {
+      "name": "gas_limit",
+      "type": "int"
+    },
+    {
+      "name": "gas_used",
+      "type": "int"
+    },
+    {
+      "name": "timestamp",
+      "type": "int"
+    },
+    {
+      "name": "transaction_count",
+      "type": "int"
+    },
+    {
+      "name": "base_fee_per_gas",
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  ]
+}

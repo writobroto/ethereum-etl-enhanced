@@ -22,7 +22,7 @@
 import logging
 
 from blockchainetl.atomic_counter import AtomicCounter
-from blockchainetl.exporters import CsvItemExporter, JsonLinesItemExporter
+from blockchainetl.exporters import CsvItemExporter, JsonLinesItemExporter, AvroItemExporter
 from blockchainetl.file_utils import get_file_handle, close_silently
 from blockchainetl.jobs.exporters.converters.composite_item_converter import CompositeItemConverter
 
@@ -47,8 +47,11 @@ class CompositeItemExporter:
             self.file_mapping[item_type] = file
             if str(filename).endswith('.json'):
                 item_exporter = JsonLinesItemExporter(file, fields_to_export=fields)
-            else:
+            elif str(filename).endswith('.csv'):
+                self.logger.info(fields)
                 item_exporter = CsvItemExporter(file, fields_to_export=fields)
+            else:
+                item_exporter = AvroItemExporter(file, fields_to_export=fields)
             self.exporter_mapping[item_type] = item_exporter
 
             self.counter_mapping[item_type] = AtomicCounter()
@@ -72,6 +75,8 @@ class CompositeItemExporter:
             counter.increment()
 
     def close(self):
+        for _, exporter in self.exporter_mapping.items():
+            exporter.finish_exporting()
         for item_type, file in self.file_mapping.items():
             close_silently(file)
             counter = self.counter_mapping[item_type]

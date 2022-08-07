@@ -38,6 +38,11 @@ from json import JSONEncoder
 import decimal
 import six
 
+import avro.schema
+
+from avro.datafile import DataFileReader, DataFileWriter
+
+from avro.io import DatumReader, DatumWriter
 
 class BaseItemExporter(object):
 
@@ -177,6 +182,22 @@ class JsonLinesItemExporter(BaseItemExporter):
         data = self.encoder.encode(itemdict) + '\n'
         self.file.write(to_bytes(data, self.encoding))
 
+class AvroItemExporter(BaseItemExporter):
+
+    def __init__(self, file, **kwargs):
+        self._configure(kwargs, dont_fail=True)
+        self.file = file
+        kwargs.setdefault('ensure_ascii', not self.encoding)
+        self.avro_schema = avro.schema.parse(open("schemas/avro/blocks.avsc", "rb").read())
+
+        self.writer = DataFileWriter(self.file, DatumWriter(), self.avro_schema, 'deflate')
+
+    def export_item(self, item):
+        itemdict = dict(self._get_serialized_fields(item))
+        self.writer.append(itemdict)
+
+    def finish_exporting(self):
+        self.writer.flush()
 
 def to_native_str(text, encoding=None, errors='strict'):
     """ Return str representation of `text`
